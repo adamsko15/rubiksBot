@@ -1,0 +1,12 @@
+# Config
+scope=identity,account,read,submit
+# These grant the bot to every scope, only use those you want it to access.
+refreshable=True
+
+# Appinfo
+app_key=HAs1wWDx75Zmog
+app_secret=jKk1ZDdSYCoti3abEyRggLr7xuI
+
+# Token
+token=41481972-VbHj1COcS0rNNSyUHVpCOgJBHI4
+refresh_token=41481972-tbZJq4YUAu5fJp1eHEGmqnwTBog
