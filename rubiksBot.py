@@ -19,8 +19,11 @@ from urllib.request import urlopen
 from botConfig import *
 
 USERAGENT = 'rubiks v0.2 by /u/risos'
-
 SUBREDDIT = 'cubers'
+
+# Number of posts to try before stopping
+# Only useful for when AutoModerator breaks or something
+POST_LIMIT = 30
 
 def get_scramble():
     """
@@ -87,8 +90,16 @@ def run_bot():
             posts_replied_to = posts_replied_to.split('\n')
             posts_replied_to = list(filter(None, posts_replied_to))
 
+    # Stop after 30 tries
+    tries = 0
+
     # For each new submission in chronological order (newest to oldest)
     for submission in sub.get_new():
+        tries += 1
+        if tries > POST_LIMIT:
+            print(str(POST_LIMIT) + " post limit reached. Stopping bot.")
+            break
+
         try:
             if submission.id not in posts_replied_to:
                 if re.search('daily discussion thread -', submission.title, re.IGNORECASE):
@@ -103,11 +114,12 @@ def run_bot():
                     # We only want to post on the most recent daily thread which is today's
                     break
         except:
+            # I doubt this will ever happen
             print('Ran out of posts')
 
         # Only allowed to send 1 request per second
         # Not sure if this really needs to be here, but better to be safe than sorry
-        print('Sleeping for 1.5 seconds')
+        print('Checking post...')
         time.sleep(1.5)
 
     # So the bot doesn't post to the same daily thread twice
