@@ -18,12 +18,15 @@ from urllib.request import urlopen
 # Contains URLs that will go in the comment
 from botConfig import *
 
+# Can't find the relative files for some reason
+cwd = os.getcwd() + '/'
+
 USERAGENT = 'rubiks v0.2 by /u/risos'
 SUBREDDIT = 'cubers'
 
 # Number of posts to try before stopping
 # Only useful for when AutoModerator breaks or something
-POST_LIMIT = 30
+POST_LIMIT = 10
 
 def get_scramble():
     """
@@ -77,15 +80,15 @@ def run_bot():
     o.refresh()
 
     # Read the scramble day from the scramble_day.txt file which just holds an integer number
-    with open('scramble_day.txt', 'r') as f:
+    with open(cwd + 'scramble_day.txt', 'r') as f:
         SCRAMBLE_DAY = f.read()
         SCRAMBLE_DAY = SCRAMBLE_DAY.strip('\n')
 
-    if not os.path.isfile('posts_replied_to.txt'):
+    if not os.path.isfile(cwd + 'posts_replied_to.txt'):
         posts_replied_to = []
 
     else:
-        with open('posts_replied_to.txt', 'r') as f:
+        with open(cwd + 'posts_replied_to.txt', 'r') as f:
             posts_replied_to = f.read()
             posts_replied_to = posts_replied_to.split('\n')
             posts_replied_to = list(filter(None, posts_replied_to))
@@ -125,13 +128,13 @@ def run_bot():
     # So the bot doesn't post to the same daily thread twice
     if posted:
         posts_replied_to.append(submission.id)
-        with open('posts_replied_to.txt', 'w') as f:
+        with open(cwd + 'posts_replied_to.txt', 'w') as f:
             for post_id in posts_replied_to:
                 f.write(post_id + '\n')
 
         SCRAMBLE_DAY = str(int(SCRAMBLE_DAY) + 1)
 
-        with open('scramble_day.txt', 'w') as f:
+        with open(cwd + 'scramble_day.txt', 'w') as f:
             f.write(SCRAMBLE_DAY + '\n')
 
     else:
