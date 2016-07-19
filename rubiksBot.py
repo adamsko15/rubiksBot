@@ -22,7 +22,7 @@ from botConfig import *
 cwd = os.getcwd() + '/'
 
 USERAGENT = 'rubiks v0.2 by /u/risos'
-SUBREDDIT = 'cubers'
+SUBREDDIT = 'coder13'
 
 # Number of posts to try before stopping
 # Only useful for when AutoModerator breaks or something
@@ -33,12 +33,16 @@ def get_scramble():
     Fetches the scramble from gyroninja's site
     """
 
-    html = urlopen(SCRAMBLE_URL).read()
+    page = urlopen(SCRAMBLE_URL)
+    html = page.read()
     # The page contains just the scramble so there is very little cleaning up to do
     text = BeautifulSoup(html, 'html.parser')
     text = text.get_text()
     # text is holding json data as a string so we need to convert it to a dictionary
     text = ast.literal_eval(text)
+
+    # Close the page to avoid errors
+    page.close()
 
     return text['scramble']
 
@@ -93,7 +97,7 @@ def run_bot():
             posts_replied_to = posts_replied_to.split('\n')
             posts_replied_to = list(filter(None, posts_replied_to))
 
-    # Stop after 30 tries
+    # Stop after 10 tries
     tries = 0
 
     # For each new submission in chronological order (newest to oldest)
