@@ -4,3 +4,4 @@ oauth*
 *.swp
 __pycache__/
 *.log
+*.sh

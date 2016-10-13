@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 Based on SmBe19's RedditBots BotSkeleton
 Requires an oauth.txt file to function
@@ -10,10 +11,12 @@ import time
 import praw
 import OAuth2Util
 import ast
+import subprocess
+import shutil
 
 # Used for extracting the scramble from the webpage
-from bs4 import BeautifulSoup
-from urllib.request import urlopen
+# from bs4 import BeautifulSoup
+# from urllib.request import urlopen
 
 # Contains URLs that will go in the comment
 from botConfig import *
@@ -22,29 +25,20 @@ from botConfig import *
 cwd = os.getcwd() + '/'
 
 USERAGENT = 'rubiks v0.2 by /u/risos'
-SUBREDDIT = 'coder13'
+SUBREDDIT = 'cubers'
 
 # Number of posts to try before stopping
 # Only useful for when AutoModerator breaks or something
-POST_LIMIT = 10
+POST_LIMIT = 20
 
 def get_scramble():
     """
     Fetches the scramble from gyroninja's site
     """
 
-    page = urlopen(SCRAMBLE_URL)
-    html = page.read()
-    # The page contains just the scramble so there is very little cleaning up to do
-    text = BeautifulSoup(html, 'html.parser')
-    text = text.get_text()
-    # text is holding json data as a string so we need to convert it to a dictionary
-    text = ast.literal_eval(text)
+    scramble = subprocess.run("/usr/local/bin/scrambo", universal_newlines=True, stdout=subprocess.PIPE)
 
-    # Close the page to avoid errors
-    page.close()
-
-    return text['scramble']
+    return scramble.stdout.strip()
 
 def scramble_to_url(scramble):
     """
@@ -109,7 +103,7 @@ def run_bot():
 
         try:
             if submission.id not in posts_replied_to:
-                if re.search('daily discussion thread -', submission.title, re.IGNORECASE):
+                if re.search('daily discussion thread', submission.title, re.IGNORECASE):
                     comment = '## Daily Scramble ' + str(SCRAMBLE_DAY) + '!\n\nScramble: [`' + scramble + '`](' + scramble_url + ')\n\nPlease count up your moves using [STM](' + STM_URL + ').\n'
                     postedComment = submission.add_comment(comment)
                     print('Sleeping for 1.5 seconds')
@@ -123,6 +117,7 @@ def run_bot():
         except:
             # I doubt this will ever happen
             print('Ran out of posts')
+            break
 
         # Only allowed to send 1 request per second
         # Not sure if this really needs to be here, but better to be safe than sorry
