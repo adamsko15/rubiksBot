@@ -5,3 +5,4 @@ oauth*
 __pycache__/
 *.log
 *.sh
+*.bak
