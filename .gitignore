@@ -1,6 +1,8 @@
 oauth*
-*.txt
 *.bat
+oauth.txt
+posts_replied_to.txt
+scramble_day.txt
 *.swp
 __pycache__/
 *.log
