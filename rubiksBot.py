@@ -28,7 +28,7 @@ SUBREDDIT = 'cubers'
 
 # Number of posts to try before stopping
 # Only useful for when AutoModerator breaks or something
-POST_LIMIT = 30
+POST_LIMIT = 40
 
 def get_scramble():
     """
