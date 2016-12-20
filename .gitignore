@@ -1,6 +1,7 @@
 oauth*
 *.bat
 oauth.txt
+praw.ini
 posts_replied_to.txt
 scramble_day.txt
 *.swp

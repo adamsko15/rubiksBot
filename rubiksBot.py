@@ -9,7 +9,6 @@ import re
 import os
 import time
 import praw
-import OAuth2Util
 import ast
 import subprocess
 import shutil
@@ -29,7 +28,7 @@ SUBREDDIT = 'cubers'
 
 # Number of posts to try before stopping
 # Only useful for when AutoModerator breaks or something
-POST_LIMIT = 20
+POST_LIMIT = 30
 
 def get_scramble():
     """
@@ -66,16 +65,14 @@ def run_bot():
     scramble_url = scramble_to_url(scramble)
 
     # Reddit stuff
-    r = praw.Reddit(USERAGENT)
-    o = OAuth2Util.OAuth2Util(r)
-    sub = r.get_subreddit(SUBREDDIT)
+    r = praw.Reddit('rubiksBot', user_agent=USERAGENT)
+    sub = r.subreddit(SUBREDDIT)
 
     posted = False
 
     print('Starting bot for subreddit', SUBREDDIT, '\n')
 
     # Main body
-    o.refresh()
 
     # Read the scramble day from the scramble_day.txt file which just holds an integer number
     with open(cwd + 'scramble_day.txt', 'r') as f:
@@ -91,11 +88,10 @@ def run_bot():
             posts_replied_to = posts_replied_to.split('\n')
             posts_replied_to = list(filter(None, posts_replied_to))
 
-    # Stop after 10 tries
     tries = 0
 
     # For each new submission in chronological order (newest to oldest)
-    for submission in sub.get_new():
+    for submission in sub.new(limit=POST_LIMIT):
         tries += 1
         if tries > POST_LIMIT:
             print(str(POST_LIMIT) + " post limit reached. Stopping bot.")
@@ -105,9 +101,7 @@ def run_bot():
             if submission.id not in posts_replied_to:
                 if re.search('daily discussion thread', submission.title, re.IGNORECASE):
                     comment = '## Daily Scramble ' + str(SCRAMBLE_DAY) + '!\n\nScramble: [`' + scramble + '`](' + scramble_url + ')\n\nPlease count up your moves using [STM](' + STM_URL + ').\n'
-                    postedComment = submission.add_comment(comment)
-                    print('Sleeping for 1.5 seconds')
-                    time.sleep(1.5)
+                    postedComment = submission.reply(comment)
                     posted = True
                     print('\nBot replying to:', submission.title)
                     print('\nText:', comment)
@@ -122,7 +116,6 @@ def run_bot():
         # Only allowed to send 1 request per second
         # Not sure if this really needs to be here, but better to be safe than sorry
         print('Checking post...')
-        time.sleep(1.5)
 
     # So the bot doesn't post to the same daily thread twice
     if posted:
