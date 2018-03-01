@@ -10,8 +10,9 @@ import os
 import time
 import praw
 import ast
-import subprocess
 import shutil
+
+from pyTwistyScrambler import scrambler333
 
 # Used for extracting the scramble from the webpage
 # from bs4 import BeautifulSoup
@@ -23,8 +24,8 @@ from botConfig import *
 # Can't find the relative files for some reason
 cwd = os.getcwd() + '/'
 
-USERAGENT = 'rubiks v0.2 by /u/risos'
-SUBREDDIT = 'cubers'
+USERAGENT = 'rubiks v0.3 by /u/risos'
+SUBREDDIT = 'coder13'
 
 # Number of posts to try before stopping
 # Only useful for when AutoModerator breaks or something
@@ -32,12 +33,13 @@ POST_LIMIT = 40
 
 def get_scramble():
     """
-    Fetches the scramble from gyroninja's site
+    Generates a scramble using euphwes' pyTwistyScrambler module
     """
 
-    scramble = subprocess.run("/usr/local/bin/scrambo", universal_newlines=True, stdout=subprocess.PIPE)
+    scramble = scrambler333.get_WCA_scramble()
 
-    return scramble.stdout.strip()
+    # We can do this because scramble only contains ascii characters
+    return str(scramble)
 
 def scramble_to_url(scramble):
     """
