@@ -25,7 +25,7 @@ from botConfig import *
 cwd = os.getcwd() + '/'
 
 USERAGENT = 'rubiks v0.3 by /u/risos'
-SUBREDDIT = 'coder13'
+SUBREDDIT = 'cubers'
 
 # Number of posts to try before stopping
 # Only useful for when AutoModerator breaks or something
